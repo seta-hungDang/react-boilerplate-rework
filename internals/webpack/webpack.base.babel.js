@@ -4,6 +4,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = options => ({
   mode: options.mode,
@@ -31,9 +32,21 @@ module.exports = options => ({
         // Preprocess our own .css files
         // This is the place to add your own loaders (e.g. sass/less etc.)
         // for a list of loaders, see https://webpack.js.org/loaders/#styling
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: { modules: true, importLoaders: 1 },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [require('autoprefixer')], // eslint-disable-line global-require
+            },
+          },
+          'sass-loader',
+        ],
       },
       {
         // Preprocess 3rd party .css files located in node_modules
@@ -113,6 +126,10 @@ module.exports = options => ({
     // drop any unreachable code.
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[hash].css',
+      chunkFilename: '[id].[hash].css',
     }),
   ]),
   resolve: {
