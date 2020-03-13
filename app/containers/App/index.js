@@ -7,11 +7,11 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import style from 'index.scss';
 import { func } from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { changeLocale } from 'redux/Language/actions';
 import message from './message';
-import { changeLocale } from '../LanguageProvider/actions';
+import style from './style.scss';
 
 function App(props) {
   const { changeLocale } = props; // eslint-disable-line
@@ -23,6 +23,7 @@ function App(props) {
   useEffect(() => {
     if (['en', 'de'].includes(lang)) changeLocale(lang);
   }, [lang]);
+
   return (
     <div>
       <Helmet
